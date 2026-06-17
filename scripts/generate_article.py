@@ -275,9 +275,9 @@ def save_articles_index(idx):
 def generate_sitemap(idx):
     today = datetime.now().strftime("%Y-%m-%d")
     static = [("/", "1.0", "weekly"), ("/services.html", "0.9", "monthly"),
-              ("/depannage-urgence.html", "0.9", "monthly"),
-              ("/zone-intervention.html", "0.8", "monthly"),
-              ("/contact.html", "0.8", "monthly"), ("/blog/", "0.7", "weekly")]
+              ("/contact.html", "0.8", "monthly"),
+              ("/mentions-legales.html", "0.2", "yearly"),
+              ("/blog/", "0.7", "weekly")]
     urls = ""
     for p, prio, freq in static:
         urls += f'\n  <url><loc>{SITE_URL}{p}</loc><lastmod>{today}</lastmod><changefreq>{freq}</changefreq><priority>{prio}</priority></url>'
