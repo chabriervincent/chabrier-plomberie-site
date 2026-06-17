@@ -445,5 +445,32 @@
 
 </div>
 
+
+<script>
+(function(){
+  // Fallback : si JS desactive ou erreur, tout reste visible
+  function showAll(){
+    document.querySelectorAll('[data-reveal]').forEach(function(el){
+      el.style.opacity='1'; el.style.transform='none';
+    });
+  }
+  if(!('IntersectionObserver' in window)){ showAll(); return; }
+  document.addEventListener('DOMContentLoaded', function(){
+    var els = document.querySelectorAll('[data-reveal]');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.style.opacity='1';
+          e.target.style.transform='none';
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+    els.forEach(function(el){ io.observe(el); });
+    // Sécurité : tout afficher après 2.5s quoi qu'il arrive
+    setTimeout(showAll, 2500);
+  });
+})();
+</script>
 </body>
 </html>
