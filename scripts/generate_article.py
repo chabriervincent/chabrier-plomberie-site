@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Agent IA - Generateur d'articles SEO pour chabrier-plomberie.fr
-Adapte a l'identite visuelle reelle du site (CSS /css/style.css, polices
-Archivo + Inter, classes .wrap / .site-head / .post, coordonnees reelles).
+Design synchronise avec le nouveau site (header sticky petrole, footer moderne,
+bouton appel mobile, polices Archivo+Inter, couleurs petrole/cuivre).
 """
 
 import anthropic
@@ -14,7 +14,6 @@ import urllib.parse
 from datetime import datetime
 from pathlib import Path
 
-# Configuration entreprise (depuis le site reel)
 SITE_NAME = "Chabrier Plomberie"
 SITE_URL = "https://chabrier-plomberie.fr"
 PHONE_DISPLAY = "06 11 46 00 41"
@@ -56,12 +55,9 @@ def save_topics(remaining, used):
 
 def slugify(text):
     text = text.lower()
-    for a, b in [("aaaaaa", "a"), ("eeee", "e"), ("iiii", "i"),
-                 ("ooooo", "o"), ("uuuu", "u"), ("c", "c")]:
-        pass
-    repl = {"à":"a","á":"a","â":"a","ã":"a","ä":"a","å":"a",
-            "è":"e","é":"e","ê":"e","ë":"e","ì":"i","í":"i","î":"i","ï":"i",
-            "ò":"o","ó":"o","ô":"o","õ":"o","ö":"o","ù":"u","ú":"u","û":"u","ü":"u","ç":"c"}
+    repl = {"à":"a","á":"a","â":"a","ã":"a","ä":"a","å":"a","è":"e","é":"e",
+            "ê":"e","ë":"e","ì":"i","í":"i","î":"i","ï":"i","ò":"o","ó":"o",
+            "ô":"o","õ":"o","ö":"o","ù":"u","ú":"u","û":"u","ü":"u","ç":"c"}
     for k, v in repl.items():
         text = text.replace(k, v)
     text = re.sub(r"[^a-z0-9\s-]", "", text)
@@ -76,46 +72,33 @@ Genere le CORPS d'un article de blog HTML optimise SEO.
 
 Sujet : {topic}
 
-Contexte entreprise :
-- {SITE_NAME}, plombier artisan base a {CITY} (78), intervient dans {ZONE}
-- Telephone : {PHONE_DISPLAY}
-- Audience : particuliers du Mantois cherchant conseils ou plombier
+Contexte : {SITE_NAME}, plombier artisan a {CITY} (78), intervient dans {ZONE}. Tel : {PHONE_DISPLAY}.
+Audience : particuliers du Mantois.
 
 INSTRUCTIONS STRICTES :
 1. Reponds UNIQUEMENT avec du HTML, rien d'autre (pas de triple backtick, pas de preambule)
 2. Genere SEULEMENT le contenu interieur (commence par le commentaire META puis le contenu)
-3. N'inclus PAS html/head/body ni header/footer du site (geres automatiquement)
-4. Utilise UNIQUEMENT ces classes CSS du site : eyebrow, section-head, btn, btn-call, faq
-5. Structure EXACTE a produire :
+3. N'inclus PAS html/head/body ni header/footer (geres automatiquement)
+4. Utilise des styles INLINE coherents avec la charte (couleurs : petrole #0F3640, cuivre #BC6638, texte #0F3640). Polices : titres en 'Archivo', texte en 'Inter'.
+5. Structure EXACTE :
 
 <!-- META: {{"title": "...", "description": "...", "keywords": "...", "slug": "..."}} -->
-<article class="post-full">
-  <p class="eyebrow">Conseils plomberie</p>
-  <h1>[Titre H1, 50-60 caracteres, mot-cle au debut]</h1>
-  <p class="post-meta"><time datetime="[YYYY-MM-DD]">[date FR]</time> - [X] min de lecture</p>
-  <p class="lede-article">[Introduction accrocheuse, 2-3 phrases]</p>
-  <h2>[Sous-titre]</h2>
-  <p>...</p>
-  <ul><li>...</li></ul>
-  <h2>Questions frequentes</h2>
-  <div class="faq">
-    <details open><summary>[Question]</summary><p>[Reponse]</p></details>
-    <details><summary>[Question]</summary><p>[Reponse]</p></details>
-  </div>
-  <div class="article-cta">
-    <h2>Besoin d'un plombier dans {ZONE} ?</h2>
-    <p>{SITE_NAME} intervient rapidement a {CITY} et dans les communes voisines. Devis gratuit, travail soigne.</p>
-    <a class="btn btn-call" href="tel:{PHONE_TEL}">Appeler {PHONE_DISPLAY}</a>
-  </div>
-</article>
+<p style="font-family:'Archivo';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:13px;color:#BC6638;margin:0 0 12px;">Conseils plomberie</p>
+<h1 style="font-family:'Archivo';font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1.1;color:#0F3640;margin:0 0 16px;">[Titre H1, 50-60 car., mot-cle au debut]</h1>
+<p style="font-size:14px;color:#5a6b6f;margin:0 0 28px;">[date FR] · [X] min de lecture</p>
+<p style="font-size:18px;line-height:1.7;color:#2c3e42;margin:0 0 28px;font-weight:500;">[Introduction accrocheuse 2-3 phrases]</p>
+
+<!-- 5 a 7 sections : pour chaque section -->
+<h2 style="font-family:'Archivo';font-weight:700;font-size:clamp(22px,3.5vw,28px);color:#0F3640;margin:36px 0 14px;">[Sous-titre]</h2>
+<p style="font-size:16px;line-height:1.8;color:#333;margin:0 0 16px;">[paragraphe]</p>
+<!-- listes si pertinent : <ul style="font-size:16px;line-height:1.8;color:#333;padding-left:22px;margin:0 0 16px;"><li>...</li></ul> -->
 
 CRITERES SEO :
-- Title 50-60 car., meta description 150-160 car. (dans le commentaire META)
+- Title 50-60 car., meta description 150-160 car. (dans META)
 - Minimum 800 mots, ton expert et rassurant
 - Mentionner {CITY} / {ZONE} naturellement
 - 5 a 7 sections h2 de 150-250 mots
 Genere maintenant :"""
-
     message = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=4000,
@@ -140,120 +123,156 @@ def extract_meta(html_content):
 
 
 def _header():
-    return f"""<header class="site-head">
-  <div class="wrap">
-    <a class="brand" href="/"><span class="mark">&#8984;</span> {SITE_NAME}</a>
-    <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">&#9776;</button>
-    <nav class="nav" id="nav">
-      <a href="/services.html">Services</a>
-      <a href="/depannage-urgence.html">Depannage urgent</a>
-      <a href="/zone-intervention.html">Zone d'intervention</a>
-      <a href="/blog/">Conseils</a>
-      <a href="/contact.html">Contact</a>
-      <a class="btn btn-call" href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>
-    </nav>
+    return f'''<header style="position:sticky;top:0;z-index:50;background:rgba(15,54,64,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.08);">
+  <div style="max-width:1200px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <a href="/" style="display:flex;align-items:center;gap:11px;">
+      <span style="width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#D67E47,#BC6638);display:flex;align-items:center;justify-content:center;font-family:'Archivo';font-weight:800;color:#0A262E;font-size:19px;box-shadow:0 4px 14px rgba(188,102,56,0.35);">C</span>
+      <span style="display:flex;flex-direction:column;line-height:1.05;">
+        <span style="font-family:'Archivo';font-weight:800;font-size:16px;color:#fff;letter-spacing:0.2px;">Chabrier Plomberie</span>
+        <span style="font-size:11px;color:#D67E47;font-weight:600;letter-spacing:0.4px;">Artisan plombier &middot; Mantois (78)</span>
+      </span>
+    </a>
+    <div style="display:flex;align-items:center;gap:26px;">
+      <nav class="only-desktop" style="display:flex;align-items:center;gap:24px;font-weight:600;font-size:14.5px;color:#EAF1F2;">
+        <a href="/services.html">Services</a>
+        <a href="/blog/">Conseils</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="tel:{PHONE_TEL}" style="display:flex;align-items:center;gap:9px;background:linear-gradient(145deg,#D67E47,#BC6638);color:#0A262E;font-family:'Archivo';font-weight:700;font-size:15px;padding:11px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(188,102,56,0.4);white-space:nowrap;">
+        <span style="font-size:16px;">&#128222;</span><span>{PHONE_DISPLAY}</span>
+      </a>
+    </div>
   </div>
-</header>"""
+</header>'''
 
 
 def _footer():
-    return f"""<footer class="site-foot">
-  <div class="wrap">
-    <div class="grid">
+    return f'''<footer style="background:#071c22;color:#9FB3B7;">
+  <div style="max-width:1200px;margin:0 auto;padding:clamp(44px,6vw,68px) 20px clamp(30px,4vw,40px);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:34px;margin-bottom:40px;">
       <div>
-        <div class="brand" style="color:#fff"><span class="mark">&#8984;</span> {SITE_NAME}</div>
-        <p>Votre plombier artisan a {CITY} et dans tout {ZONE} (78).</p>
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px;">
+          <span style="width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#D67E47,#BC6638);display:flex;align-items:center;justify-content:center;font-family:'Archivo';font-weight:800;color:#0A262E;font-size:19px;">C</span>
+          <span style="font-family:'Archivo';font-weight:800;font-size:17px;color:#fff;">Chabrier Plomberie</span>
+        </div>
+        <p style="font-size:14px;line-height:1.6;margin:0;max-width:34ch;">Artisan plombier de proximite. Travail soigne, prix annonce d'avance, sans surprise.</p>
       </div>
       <div>
-        <h4>Services</h4>
-        <a href="/services.html">Fuite et debouchage</a>
-        <a href="/services.html">Chauffe-eau</a>
-        <a href="/depannage-urgence.html">Depannage urgent</a>
+        <div style="font-family:'Archivo';font-weight:700;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;">Contact</div>
+        <a href="tel:{PHONE_TEL}" style="display:flex;align-items:center;gap:9px;font-size:16px;color:#fff;font-weight:600;margin-bottom:12px;">&#128222; {PHONE_DISPLAY}</a>
+        <a href="mailto:{EMAIL}" style="display:flex;align-items:center;gap:9px;font-size:14.5px;margin-bottom:12px;word-break:break-all;">&#9993; {EMAIL}</a>
+        <div style="display:flex;align-items:center;gap:9px;font-size:14.5px;">&#128205; {CITY} (78)</div>
       </div>
       <div>
-        <h4>Contact</h4>
-        <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>
-        <a href="mailto:{EMAIL}">{EMAIL}</a>
-        <a href="/contact.html">Demander un devis</a>
+        <div style="font-family:'Archivo';font-weight:700;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;">Zone d'intervention</div>
+        <p style="font-size:14px;line-height:1.7;margin:0;">Mantes-la-Jolie &middot; Mantes-la-Ville &middot; Limay &middot; Buchelay &middot; Magnanville &middot; Rosny-sur-Seine &middot; Guerville &middot; Epone</p>
       </div>
     </div>
-    <div class="foot-bottom">
-      <span>&copy; {datetime.now().year} {SITE_NAME} - {ADDRESS}</span>
-      <span>Plombier {CITY} - Mantois - Yvelines</span>
+    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:22px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;font-size:13px;">
+      <span>&copy; {datetime.now().year} Chabrier Plomberie &mdash; Tous droits reserves.</span>
+      <div style="display:flex;gap:18px;">
+        <a href="/services.html">Services</a>
+        <a href="/blog/">Conseils</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/mentions-legales.html">Mentions legales</a>
+      </div>
     </div>
   </div>
 </footer>
-<a class="call-fab" href="tel:{PHONE_TEL}">Appeler - {PHONE_DISPLAY}</a>"""
+<a href="tel:{PHONE_TEL}" class="only-mobile" style="position:fixed;left:0;right:0;bottom:0;z-index:60;background:linear-gradient(145deg,#D67E47,#BC6638);color:#0A262E;font-family:'Archivo';font-weight:800;font-size:18px;padding:16px;align-items:center;justify-content:center;gap:10px;box-shadow:0 -4px 20px rgba(0,0,0,0.25);">
+  <span style="font-size:20px;">&#128222;</span> Appeler le {PHONE_DISPLAY}
+</a>'''
 
 
-def _head(title, desc, canonical):
-    return f"""<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+GLOBAL_CSS = '''*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0F3640;background:#F6F3EE;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+img{display:block;max-width:100%;}
+.only-mobile{display:none;}
+.pad-mobile{padding-bottom:0;}
+@media (max-width:760px){
+  .only-mobile{display:flex;}
+  .only-desktop{display:none;}
+  .pad-mobile{padding-bottom:74px;}
+}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}'''
+
+
+def _head(title, desc, canonical, schema=""):
+    return f'''<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{canonical}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css">"""
+{schema}
+<style>{GLOBAL_CSS}</style>'''
 
 
 def wrap_in_page(article_html, meta):
     today_iso = datetime.now().strftime("%Y-%m-%d")
-    schema = f"""<script type="application/ld+json">
+    schema = f'''<script type="application/ld+json">
 {{"@context":"https://schema.org","@type":"Article","headline":"{meta['title']}","description":"{meta['description']}","author":{{"@type":"Organization","name":"{SITE_NAME}","url":"{SITE_URL}"}},"publisher":{{"@type":"Organization","name":"{SITE_NAME}","url":"{SITE_URL}"}},"datePublished":"{today_iso}","dateModified":"{today_iso}","mainEntityOfPage":"{SITE_URL}/blog/{meta['slug']}.html"}}
-</script>"""
-    return f"""<!DOCTYPE html>
+</script>'''
+    cta = f'''<div style="margin:44px 0;padding:32px;border-radius:16px;background:linear-gradient(145deg,#0F3640,#0A262E);color:#fff;">
+  <div style="font-family:'Archivo';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:#D67E47;margin-bottom:10px;">Une urgence ?</div>
+  <h2 style="font-family:'Archivo';font-weight:800;font-size:24px;color:#fff;margin:0 0 10px;">Besoin d'un plombier dans {ZONE} ?</h2>
+  <p style="font-size:15px;line-height:1.6;color:#C5D4D6;margin:0 0 20px;max-width:48ch;">{SITE_NAME} intervient rapidement a {CITY} et dans les communes voisines. Devis gratuit, travail soigne.</p>
+  <a href="tel:{PHONE_TEL}" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(145deg,#D67E47,#BC6638);color:#0A262E;font-family:'Archivo';font-weight:700;font-size:17px;padding:14px 26px;border-radius:999px;box-shadow:0 6px 18px rgba(188,102,56,0.4);">&#128222; {PHONE_DISPLAY}</a>
+</div>'''
+    return f'''<!DOCTYPE html>
 <html lang="fr">
 <head>
-{_head(meta['title'] + ' - ' + SITE_NAME, meta['description'], SITE_URL + '/blog/' + meta['slug'] + '.html')}
-{schema}
+{_head(meta['title'] + ' &mdash; ' + SITE_NAME, meta['description'], SITE_URL + '/blog/' + meta['slug'] + '.html', schema)}
 </head>
-<body>
+<body class="pad-mobile" id="top">
 {_header()}
-<section style="padding-top:2.5rem">
-  <div class="wrap" style="max-width:820px">
-    <p style="font-size:.85rem;color:var(--muted)"><a href="/">Accueil</a> &rsaquo; <a href="/blog/">Conseils</a> &rsaquo; {meta['title']}</p>
-    {article_html}
-  </div>
-</section>
+<article style="max-width:760px;margin:0 auto;padding:clamp(32px,5vw,56px) 20px;">
+  <p style="font-size:13px;color:#8a9a9e;margin:0 0 24px;"><a href="/" style="color:#BC6638;">Accueil</a> &rsaquo; <a href="/blog/" style="color:#BC6638;">Conseils</a> &rsaquo; {meta['title']}</p>
+  {article_html}
+  {cta}
+</article>
 {_footer()}
 </body>
-</html>"""
+</html>'''
 
 
 def update_blog_index(articles_index):
     cards = ""
     for a in sorted(articles_index, key=lambda x: x["date"], reverse=True):
-        cards += f"""
-      <a class="post" href="/blog/{a['slug']}.html">
-        <div class="body">
-          <span class="cat">Conseils</span>
-          <h3>{a['title']}</h3>
-          <p>{a['description']}</p>
-        </div>
-      </a>"""
-    html = f"""<!DOCTYPE html>
+        cards += f'''
+      <a href="/blog/{a['slug']}.html" style="display:block;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(15,54,64,0.08);padding:26px;border:1px solid rgba(15,54,64,0.06);">
+        <span style="font-family:'Archivo';font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#BC6638;">Conseils</span>
+        <h2 style="font-family:'Archivo';font-weight:700;font-size:20px;color:#0F3640;margin:10px 0 8px;line-height:1.25;">{a['title']}</h2>
+        <p style="font-size:14.5px;line-height:1.6;color:#5a6b6f;margin:0;">{a['description']}</p>
+      </a>'''
+    schema_head = _head('Conseils plomberie &mdash; ' + SITE_NAME + ' | Plombier ' + CITY,
+                        'Conseils et astuces plomberie par ' + SITE_NAME + ', votre plombier a ' + CITY + ' et dans ' + ZONE + '.',
+                        SITE_URL + '/blog/')
+    html = f'''<!DOCTYPE html>
 <html lang="fr">
 <head>
-{_head('Conseils plomberie - ' + SITE_NAME + ' | Plombier ' + CITY, 'Conseils et astuces plomberie par ' + SITE_NAME + ', votre plombier a ' + CITY + ' et dans ' + ZONE + '.', SITE_URL + '/blog/')}
+{schema_head}
 </head>
-<body>
+<body class="pad-mobile" id="top">
 {_header()}
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow">Le blog</p>
-      <h2>Conseils et astuces plomberie</h2>
-      <p>Guides pratiques pour entretenir, depanner et renover votre plomberie. Et quand il faut un pro, {SITE_NAME} intervient dans {ZONE}.</p>
-    </div>
-    <div class="posts">{cards}
-    </div>
+<section style="max-width:1100px;margin:0 auto;padding:clamp(40px,6vw,68px) 20px;">
+  <p style="font-family:'Archivo';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:13px;color:#BC6638;margin:0 0 12px;">Le blog</p>
+  <h1 style="font-family:'Archivo';font-weight:800;font-size:clamp(30px,5vw,44px);line-height:1.1;color:#0F3640;margin:0 0 14px;">Conseils &amp; astuces plomberie</h1>
+  <p style="font-size:17px;line-height:1.7;color:#5a6b6f;max-width:60ch;margin:0 0 40px;">Guides pratiques pour entretenir, depanner et renover votre plomberie. Et quand il faut un pro, {SITE_NAME} intervient dans {ZONE}.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;">{cards}
   </div>
 </section>
 {_footer()}
 </body>
-</html>"""
+</html>'''
     BLOG_DIR.mkdir(exist_ok=True)
     with open(BLOG_DIR / "index.html", "w", encoding="utf-8") as f:
         f.write(html)
@@ -296,8 +315,6 @@ def generate_robots_txt():
         with open("robots.txt", "w", encoding="utf-8") as f:
             f.write(content)
         print("robots.txt mis a jour")
-    else:
-        print("robots.txt deja OK")
 
 
 def ping_indexnow():
